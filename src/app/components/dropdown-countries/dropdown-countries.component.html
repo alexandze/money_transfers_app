@@ -1,5 +1,5 @@
 <div class="card flex flex-col justify-content-center z-0">
-  <label class="text-sm" [for]="forLabel">{{ label }}</label>
+  <label class="text-sm font-bold mb-1" [for]="forLabel">{{ label }}</label>
   <p-dropdown
     [options]="countries"
     [formControl]="selectedCountryFormControl"
@@ -7,22 +7,26 @@
     [filter]="false"
     filterBy="name"
     [showClear]="false"
-    placeholder="Select a Country"
+    [placeholder]="placeholder"
     styleClass="w-20rem"
     [id]="forLabel"
     [name]="forLabel"
+    [style]="cssProperties"
   >
     <ng-template pTemplate="selectedItem" let-selectedOption>
       <div class="flex align-items-center gap-2">
-        <img src="ca.svg" style="width: 18px" />
-        <div>{{ selectedOption.name }}</div>
+        <img
+          [src]="selectedOption.code.toLowerCase() + '.svg'"
+          style="width: 18px"
+        />
+        <div class="w-full">{{ selectedOption.name }}</div>
       </div>
     </ng-template>
 
     <ng-template let-country pTemplate="item">
       <div class="flex align-items-center gap-2">
-        <img src="ca.svg" style="width: 18px" />
-        <div>{{ country.name }}</div>
+        <img [src]="country.code.toLowerCase() + '.svg'" style="width: 18px" />
+        <div class="w-full">{{ country.name }}</div>
       </div>
     </ng-template>
   </p-dropdown>

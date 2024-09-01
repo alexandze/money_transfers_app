@@ -21,13 +21,45 @@
       class="flex-col flex w-full bg-black h-auto border-white text-white p-10"
     >
       <div
-        class="w-full rounded-lg overflow-hidden shadow-2xl bg-white h-[500px] p-5 text-black"
+        class="w-full rounded-lg overflow-hidden shadow-2xl bg-white h-[500px] p-5 text-black flex flex-col"
       >
-        <div>
+        <div class="mb-5">
           <app-dropdown-countries
-            [formControl]="myFormControl"
-            [label]="'Country from'"
+            [countries]="countriesFrom"
+            [formControl]="countriesFromFormControl"
+            [label]="labelCountryFrom"
+            [placeholder]="placeholderCountryFrom"
           ></app-dropdown-countries>
+        </div>
+        <div class="mb-5">
+          <app-dropdown-countries
+            [countries]="countriesTo"
+            [formControl]="countriesToFormControl"
+            [label]="labelCountryTo"
+            [placeholder]="placeholderCountryTo"
+          ></app-dropdown-countries>
+        </div>
+        <div>
+          <app-input-number
+            [formControl]="sendAmountFormControl"
+            [label]="labelSendAmount"
+            [placeholder]="placeholderSendAmount"
+            [mode]="modeAmountInputNumber"
+            [currency]="currencySendAmount"
+            [forLabel]="forLabelSendAmount"
+            [inputId]="forLabelSendAmount"
+          ></app-input-number>
+        </div>
+        <div>
+          <app-input-number
+            [formControl]="receiveAmountFormControl"
+            [label]="labelReceiveAmount"
+            [placeholder]="placeholderReceiveAmount"
+            [mode]="modeAmountInputNumber"
+            [currency]="currencyReceiveAmount"
+            [forLabel]="forLabelReceiveAmount"
+            [inputId]="forLabelReceiveAmount"
+          ></app-input-number>
         </div>
       </div>
     </div>

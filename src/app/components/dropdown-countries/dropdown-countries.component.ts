@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnInit,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -9,11 +16,12 @@ import {
 import { DropdownFilterOptions, DropdownModule } from 'primeng/dropdown';
 import { Country } from '../../models/Country';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dropdown-countries',
   standalone: true,
-  imports: [FormsModule, DropdownModule, CommonModule, ReactiveFormsModule],
+  imports: [DropdownModule, CommonModule, ReactiveFormsModule],
   templateUrl: './dropdown-countries.component.html',
   styleUrl: './dropdown-countries.component.scss',
   providers: [
@@ -25,16 +33,17 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class DropdownCountriesComponent
-  implements OnInit, ControlValueAccessor, AfterViewInit
+  implements ControlValueAccessor, AfterViewInit
 {
-  countries: Country[] | undefined;
+  @Input() countries: Country[] | undefined;
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() forLabel: string = '';
 
+  destroyRef = inject(DestroyRef);
+
   onChange: any = () => {};
   onTouched: any = () => {};
-  value: any;
 
   get selectedCountry(): Country | null {
     return this.selectedCountryFormControl.value;
@@ -44,15 +53,14 @@ export class DropdownCountriesComponent
 
   filterValue: string | undefined = '';
   isDisabled: boolean = false;
-
-  ngOnInit() {
-    this.countries = [{ name: 'Canada', code: 'CA' }];
-  }
+  cssProperties = { width: '100%' };
 
   ngAfterViewInit(): void {
-    this.selectedCountryFormControl.valueChanges.subscribe((value) => {
-      this.onChange(value);
-    });
+    this.selectedCountryFormControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.onChange(value);
+      });
 
     this.setDisabledState?.(this.isDisabled);
   }
