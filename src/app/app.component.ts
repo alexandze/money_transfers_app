@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, DestroyRef, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DropdownCountriesComponent } from './components/dropdown-countries/dropdown-countries.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -6,6 +12,13 @@ import { InputNumberComponent } from './components/input-number/input-number.com
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, tap, zip } from 'rxjs';
 import { Country } from './models/Country';
+import { Store } from '@ngrx/store';
+import { AppState } from './app.state';
+import {
+  getRateAction,
+  getReceiveCountriesAction,
+  getSendCountriesAction,
+} from './stores/money-send-form/money-send-form.actions';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +32,7 @@ import { Country } from './models/Country';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit {
   title = 'money_transfer';
   countriesFromFormControl = new FormControl<Country | null>(null);
   countriesToFormControl = new FormControl<Country | null>(null);
@@ -27,9 +40,10 @@ export class AppComponent implements AfterViewInit {
   receiveAmountFormControl = new FormControl<number | null>(null);
   destroyRef = inject(DestroyRef);
 
-  countriesFrom = [{ name: 'Canada', code: 'CA' }];
-  countriesTo = [{ name: 'Cameroon', code: 'CMR' }];
-  // label
+  countriesFrom: Country[] = [{ name: 'Canada', code: 'CA', currency: 'CAD' }];
+  countriesTo: Country[] = [{ name: 'Cameroon', code: 'CMR', currency: 'XAF' }];
+
+  // label:
   labelCountryFrom = 'Country from';
   labelCountryTo = 'Country to';
   labelSendAmount = 'Send amount';
@@ -48,10 +62,21 @@ export class AppComponent implements AfterViewInit {
   forLabelSendAmount = 'sendAmount';
   forLabelReceiveAmount = 'receiveAmount';
 
+  constructor(private store: Store<AppState>) {}
+  ngOnInit(): void {
+    this.onInitDispatch();
+  }
+
   ngAfterViewInit(): void {
     this.onConvertSendValueToReceiveValue();
     this.onConvertReceiveValueToSendValue();
     this.onChooseSendCurrency();
+  }
+
+  private onInitDispatch() {
+    this.store.dispatch(getRateAction());
+    this.store.dispatch(getSendCountriesAction());
+    this.store.dispatch(getReceiveCountriesAction());
   }
 
   private onChooseSendCurrency() {
@@ -63,10 +88,10 @@ export class AppComponent implements AfterViewInit {
     )
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap(([countrySendAmount, countryReceiveAmount]) =>
+        tap(([sendAmountCountry, receiveAmountCountry]) =>
           this.chooseCurrencyForSendReceiveAmount(
-            countrySendAmount,
-            countryReceiveAmount
+            sendAmountCountry,
+            receiveAmountCountry
           )
         ),
         tap(() => this.enabledAmountForm())
@@ -134,9 +159,8 @@ export class AppComponent implements AfterViewInit {
   private onConvertSendValueToReceiveValue() {
     this.sendAmountFormControl.valueChanges
       .pipe(
-        //takeUntilDestroyed(this.destroyRef),
+        takeUntilDestroyed(this.destroyRef),
         map((value) => this.convertCADToXAF(value)),
-        tap((value) => console.log(value)),
         tap((value) =>
           this.receiveAmountFormControl.setValue(value, {
             emitEvent: false,

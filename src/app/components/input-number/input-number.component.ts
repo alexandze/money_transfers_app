@@ -72,7 +72,6 @@ export class InputNumberComponent
     this.onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    console.log(isDisabled);
     if (isDisabled) {
       this.inputNumberFormControl.disable();
       return;
