@@ -36,9 +36,10 @@ export class DropdownCountriesComponent
   implements ControlValueAccessor, AfterViewInit
 {
   @Input() countries: Country[] | undefined;
-  @Input() label: string = '';
-  @Input() placeholder: string = '';
-  @Input() forLabel: string = '';
+  @Input() label = '';
+  @Input() placeholder = '';
+  @Input() forLabel = '';
+  @Input() loading = false;
 
   destroyRef = inject(DestroyRef);
 

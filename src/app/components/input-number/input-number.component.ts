@@ -4,7 +4,8 @@ import {
   DestroyRef,
   inject,
   Input,
-  OnInit,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -15,6 +16,7 @@ import {
 } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { tap } from 'rxjs';
+import { DEFAULT_CURRENCY } from '../../models/Country';
 
 @Component({
   selector: 'app-input-number',
@@ -31,14 +33,15 @@ import { tap } from 'rxjs';
   ],
 })
 export class InputNumberComponent
-  implements ControlValueAccessor, AfterViewInit
+  implements ControlValueAccessor, AfterViewInit, OnChanges
 {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() forLabel: string = '';
   @Input() inputId: string = '';
   @Input() mode: string = '';
-  @Input() currency: string = '';
+  @Input() currency: string | null = '';
+  @Input() _currency: string = DEFAULT_CURRENCY;
 
   destroyRef = inject(DestroyRef);
 
@@ -49,6 +52,17 @@ export class InputNumberComponent
 
   isDisabled: boolean = false;
   cssProperties = { width: '100%' };
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.handleChangeCurrency(changes);
+  }
+
+  handleChangeCurrency(changes: SimpleChanges) {
+    if (!changes['currency']) return;
+    const currency: string = changes['currency'].currentValue;
+    if (!currency) return;
+    this._currency = currency;
+  }
 
   ngAfterViewInit(): void {
     this.inputNumberFormControl.valueChanges

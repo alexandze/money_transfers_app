@@ -3,3 +3,5 @@ export interface Country {
   code: string;
   currency: string;
 }
+
+export const DEFAULT_CURRENCY = 'USD';

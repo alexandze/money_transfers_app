@@ -1,0 +1,44 @@
+<div
+  class="w-full rounded-lg overflow-hidden shadow-2xl bg-white h-[500px] p-5 text-black flex flex-col"
+>
+  <div class="mb-5">
+    <app-dropdown-countries
+      [countries]="sendCountries()"
+      [formControl]="sendCountriesFormControl"
+      [label]="labelCountryFrom"
+      [placeholder]="placeholderCountryFrom"
+      [loading]="sendCountriesDropdownLoading() || false"
+    ></app-dropdown-countries>
+  </div>
+  <div class="mb-5">
+    <app-dropdown-countries
+      [countries]="receiveCountries()"
+      [formControl]="receiveCountriesFormControl"
+      [label]="labelCountryTo"
+      [placeholder]="placeholderCountryTo"
+      [loading]="receiveCountriesDropdownLoading() || false"
+    ></app-dropdown-countries>
+  </div>
+  <div>
+    <app-input-number
+      [formControl]="sendAmountFormControl"
+      [label]="labelSendAmount"
+      [placeholder]="placeholderSendAmount"
+      [mode]="modeAmountInputNumber"
+      [currency]="sendCurrency$ | async"
+      [forLabel]="forLabelSendAmount"
+      [inputId]="forLabelSendAmount"
+    ></app-input-number>
+  </div>
+  <div>
+    <app-input-number
+      [formControl]="receiveAmountFormControl"
+      [label]="labelReceiveAmount"
+      [placeholder]="placeholderReceiveAmount"
+      [mode]="modeAmountInputNumber"
+      [currency]="receiveCurrency$ | async"
+      [forLabel]="forLabelReceiveAmount"
+      [inputId]="forLabelReceiveAmount"
+    ></app-input-number>
+  </div>
+</div>

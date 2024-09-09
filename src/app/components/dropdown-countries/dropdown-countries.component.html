@@ -3,15 +3,14 @@
   <p-dropdown
     [options]="countries"
     [formControl]="selectedCountryFormControl"
-    optionLabel="name"
+    [optionLabel]="forLabel"
     [filter]="false"
-    filterBy="name"
-    [showClear]="false"
     [placeholder]="placeholder"
-    styleClass="w-20rem"
     [id]="forLabel"
     [name]="forLabel"
     [style]="cssProperties"
+    [loading]="loading"
+    loadingIcon="pi pi-spin pi-spinner"
   >
     <ng-template pTemplate="selectedItem" let-selectedOption>
       <div class="flex align-items-center gap-2">

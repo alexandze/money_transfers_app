@@ -38,3 +38,13 @@ export const getReceiveCountriesSuccessAction = createAction(
   '[Money Send Form component] Get Receive Countries Success',
   props<{ receiveCountries: Country[] }>()
 );
+
+export const setSelectedSendCountryAction = createAction(
+  '[Money Send Form component] Set Selected Send Country',
+  props<{ selectedSendCountry: Country | null }>()
+);
+
+export const setSelectedReceiveCountryAction = createAction(
+  '[Money Send Form component] Set Selected Receive Country',
+  props<{ selectedReceiveCountry: Country | null }>()
+);

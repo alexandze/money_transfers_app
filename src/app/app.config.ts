@@ -11,8 +11,10 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideState, provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import { moneySendFormReducer } from './stores/money-send-form/money-send-form.reducer';
-import { MONEY_SEND_FORM_STATE_NAME } from './app.state';
+import {
+  MONEY_SEND_FORM_STATE_NAME,
+  moneySendFormReducer,
+} from './stores/money-send-form/money-send-form.reducer';
 import { MoneySendFormEffect } from './stores/money-send-form/money-send-form.effect';
 import { GET_COUNTRY_USE_CASE, GET_RATE_USE_CASE } from './injection-token';
 import { MoneyService } from './services/money/money.service';
