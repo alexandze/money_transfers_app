@@ -1,30 +1,35 @@
 import { createReducer, on } from '@ngrx/store';
 import {
-  convertSendValueToReceiveValueAction,
+  convertAmountAction,
+  convertAmountSuccessAction,
   getRateSuccessAction,
   getReceiveCountriesAction,
   getReceiveCountriesSuccessAction,
   getSendCountriesAction,
   getSendCountriesSuccessAction,
-  setCountryCodeAction,
   setSelectedReceiveCountryAction,
+  setSelectedReceiveRateSuccessAction,
   setSelectedSendCountryAction,
+  setSelectedSendRateSuccessAction,
 } from './money-send-form.actions';
 import { Rate } from '../../models/Rate';
 import { Country } from '../../models/Country';
+import { AmountType } from '../../models/AmountType';
 
 export const MONEY_SEND_FORM_STATE_NAME = 'moneySendForm';
 
 export interface MoneySendFormState {
   sendAmount?: number;
   receiveAmount?: number;
-  rate?: Rate;
+  rates?: Rate[];
   sendCountries?: Country[];
   receiveCountries?: Country[];
   sendCountriesDropdownLoading?: boolean;
   receiveCountriesDropdownLoading?: boolean;
   selectedSendCountry: Country | null;
   selectedReceiveCountry: Country | null;
+  selectedSendRate?: Rate;
+  selectedReceiveRate?: Rate;
 }
 
 export const initialState: MoneySendFormState = {
@@ -34,13 +39,27 @@ export const initialState: MoneySendFormState = {
 
 export const moneySendFormReducer = createReducer(
   initialState,
-  on(convertSendValueToReceiveValueAction, (state, { sendAmount }) => ({
+  on(convertAmountAction, (state, { amount, amountType }) =>
+    amountType === AmountType.Send
+      ? {
+          ...state,
+          sendAmount: amount,
+        }
+      : { ...state, receiveAmount: amount }
+  ),
+  on(
+    convertAmountSuccessAction,
+    (state, { amountConverted, amountTypeConverted }) =>
+      amountTypeConverted === AmountType.Send
+        ? { ...state, sendAmount: amountConverted }
+        : {
+            ...state,
+            receiveAmount: amountConverted,
+          }
+  ),
+  on(getRateSuccessAction, (state, { rates }) => ({
     ...state,
-    sendAmount: sendAmount,
-  })),
-  on(getRateSuccessAction, (state, { rate }) => ({
-    ...state,
-    rate: rate,
+    rates,
   })),
   on(getSendCountriesAction, (state) => ({
     ...state,
@@ -67,5 +86,13 @@ export const moneySendFormReducer = createReducer(
   on(setSelectedReceiveCountryAction, (state, { selectedReceiveCountry }) => ({
     ...state,
     selectedReceiveCountry,
+  })),
+  on(setSelectedSendRateSuccessAction, (state, { selectedSendRate }) => ({
+    ...state,
+    selectedSendRate,
+  })),
+  on(setSelectedReceiveRateSuccessAction, (state, { selectedReceiveRate }) => ({
+    ...state,
+    selectedReceiveRate,
   }))
 );

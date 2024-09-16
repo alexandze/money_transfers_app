@@ -16,7 +16,11 @@ import {
   moneySendFormReducer,
 } from './stores/money-send-form/money-send-form.reducer';
 import { MoneySendFormEffect } from './stores/money-send-form/money-send-form.effect';
-import { GET_COUNTRY_USE_CASE, GET_RATE_USE_CASE } from './injection-token';
+import {
+  CONVERT_AMOUNT_USE_CASE,
+  GET_COUNTRY_USE_CASE,
+  GET_RATE_USE_CASE,
+} from './injection-token';
 import { MoneyService } from './services/money/money.service';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
@@ -34,6 +38,7 @@ export const appConfig: ApplicationConfig = {
     provideEffects(MoneySendFormEffect),
     { provide: GET_RATE_USE_CASE, useClass: MoneyService },
     { provide: GET_COUNTRY_USE_CASE, useClass: MoneyService },
+    { provide: CONVERT_AMOUNT_USE_CASE, useClass: MoneyService },
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
 };

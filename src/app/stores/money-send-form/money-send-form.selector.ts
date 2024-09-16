@@ -37,3 +37,30 @@ export const selectReceiveCurrency = createSelector(
   selectMoneySendForm,
   (state) => state?.selectedReceiveCountry?.currency
 );
+
+export const selectSendAmountRateType = createSelector(
+  selectMoneySendForm,
+  (state) =>
+    `${state.selectedSendCountry?.code}->${state.selectedReceiveCountry?.code}`
+);
+
+export const selectReceiveAmountRateType = createSelector(
+  selectMoneySendForm,
+  (state) =>
+    `${state.selectedReceiveCountry?.code}->${state.selectedSendCountry?.code}`
+);
+
+export const selectRates = createSelector(
+  selectMoneySendForm,
+  (state) => state.rates
+);
+
+export const selectSelectedSendRate = createSelector(
+  selectMoneySendForm,
+  (state) => state.selectedSendRate
+);
+
+export const selectSelectedReceiveRate = createSelector(
+  selectMoneySendForm,
+  (state) => state.selectedReceiveRate
+);

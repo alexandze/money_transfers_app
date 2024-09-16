@@ -6,13 +6,16 @@ import { Country } from '../../models/Country';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../app.state';
 import {
+  convertAmountAction,
   getRateAction,
   getReceiveCountriesAction,
   getSendCountriesAction,
   setSelectedReceiveCountryAction,
+  setSelectedReceiveRateAction,
   setSelectedSendCountryAction,
+  setSelectedSendRateAction,
 } from '../../stores/money-send-form/money-send-form.actions';
-import { map, Observable, tap, zip } from 'rxjs';
+import { filter, map, Observable, tap, zip } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   selectReceiveCountries,
@@ -22,6 +25,7 @@ import {
   selectSendCurrency,
 } from '../../stores/money-send-form/money-send-form.selector';
 import { CommonModule } from '@angular/common';
+import { AmountType } from '../../models/AmountType';
 
 @Component({
   selector: 'app-money-send-form',
@@ -84,12 +88,31 @@ export class MoneySendFormComponent implements OnInit {
   ngAfterViewInit(): void {
     this.onDispatchSelectedSendCountry();
     this.onDispatchSelectedReceiveCountry();
+    this.onDispatchSendAmountValueChange();
   }
 
   private onInitDispatch() {
     this.store.dispatch(getRateAction());
     this.store.dispatch(getSendCountriesAction());
     this.store.dispatch(getReceiveCountriesAction());
+  }
+
+  private onDispatchSendAmountValueChange() {
+    this.sendAmountFormControl.valueChanges
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        //filter((amount) => typeof amount === 'number'),
+        tap((amount) => console.log('my amount', amount)),
+        tap((amount) =>
+          this.store.dispatch(
+            convertAmountAction({
+              amount: typeof amount === 'number' ? amount : undefined,
+              amountType: AmountType.Send,
+            })
+          )
+        )
+      )
+      .subscribe();
   }
 
   private onDispatchSelectedSendCountry() {
@@ -102,7 +125,11 @@ export class MoneySendFormComponent implements OnInit {
           this.store.dispatch(
             setSelectedSendCountryAction({ selectedSendCountry })
           )
-        )
+        ),
+        tap(() => {
+          this.store.dispatch(setSelectedSendRateAction());
+          this.store.dispatch(setSelectedReceiveRateAction());
+        })
       )
       .subscribe();
   }
@@ -117,7 +144,11 @@ export class MoneySendFormComponent implements OnInit {
           this.store.dispatch(
             setSelectedReceiveCountryAction({ selectedReceiveCountry })
           )
-        )
+        ),
+        tap(() => {
+          this.store.dispatch(setSelectedSendRateAction());
+          this.store.dispatch(setSelectedReceiveRateAction());
+        })
       )
       .subscribe();
   }
@@ -160,23 +191,5 @@ export class MoneySendFormComponent implements OnInit {
 
   private enableReceiveAmountFormControl() {
     this.receiveAmountFormControl.enable();
-  }
-
-  private convertCADToXAF(cadAmount: number): number | null {
-    if (typeof cadAmount !== 'number') {
-      return null;
-    }
-
-    // TODO: rate from API
-    return cadAmount * 440;
-  }
-
-  private convertXAFToCAD(xafAmount: number | null): number | null {
-    if (typeof xafAmount !== 'number') {
-      return null;
-    }
-
-    // TODO: rate from API
-    return xafAmount / 440;
   }
 }
