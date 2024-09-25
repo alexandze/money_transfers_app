@@ -33,7 +33,7 @@ export class MoneySendFormEffect {
     @Inject(GET_COUNTRY_USE_CASE)
     private getCountryUseCase: GetCountriesUseCase,
     @Inject(CONVERT_AMOUNT_USE_CASE)
-    private convertAmountUseCase: ConvertAmountUseCase
+    private convertAmountUseCase: ConvertAmountUseCase,
   ) {}
 
   public getRate$ = createEffect(() =>
@@ -41,8 +41,8 @@ export class MoneySendFormEffect {
       ofType(getRateAction),
       switchMap(() => this.getRateUseCase.getRate()),
       map((rates) => getRateSuccessAction({ rates })),
-      catchError(() => EMPTY)
-    )
+      catchError(() => EMPTY),
+    ),
   );
 
   public setSelectedSendRate$ = createEffect(() =>
@@ -50,9 +50,9 @@ export class MoneySendFormEffect {
       ofType(setSelectedSendRateAction),
       switchMap(() => this.getRateUseCase.getSendRateFromState()),
       map((selectedSendRate) =>
-        setSelectedSendRateSuccessAction({ selectedSendRate })
-      )
-    )
+        setSelectedSendRateSuccessAction({ selectedSendRate }),
+      ),
+    ),
   );
 
   public setSelectedReceiveRate$ = createEffect(() =>
@@ -60,17 +60,17 @@ export class MoneySendFormEffect {
       ofType(setSelectedReceiveRateAction),
       switchMap(() => this.getRateUseCase.getReceiveRateFromState()),
       map((selectedReceiveRate) =>
-        setSelectedReceiveRateSuccessAction({ selectedReceiveRate })
-      )
-    )
+        setSelectedReceiveRateSuccessAction({ selectedReceiveRate }),
+      ),
+    ),
   );
 
   public getSendCountry$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getSendCountriesAction),
       switchMap(() => this.getCountryUseCase.getSendCountries()),
-      map((sendCountries) => getSendCountriesSuccessAction({ sendCountries }))
-    )
+      map((sendCountries) => getSendCountriesSuccessAction({ sendCountries })),
+    ),
   );
 
   public getReceiveCountry$ = createEffect(() =>
@@ -78,9 +78,9 @@ export class MoneySendFormEffect {
       ofType(getReceiveCountriesAction),
       switchMap(() => this.getCountryUseCase.getReceiveCountries()),
       map((receiveCountries) =>
-        getReceiveCountriesSuccessAction({ receiveCountries })
-      )
-    )
+        getReceiveCountriesSuccessAction({ receiveCountries }),
+      ),
+    ),
   );
 
   public convertAmount$ = createEffect(() =>
@@ -94,15 +94,15 @@ export class MoneySendFormEffect {
               amountType === AmountType.Send
                 ? AmountType.Receive
                 : AmountType.Send,
-          }))
-        )
+          })),
+        ),
       ),
       map(({ amountConverted, amountTypeConverted }) =>
         convertAmountSuccessAction({
           amountConverted: amountConverted,
           amountTypeConverted,
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 }

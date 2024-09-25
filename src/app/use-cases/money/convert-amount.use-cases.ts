@@ -3,7 +3,7 @@ import { AmountType } from '../../models/AmountType';
 
 export interface ConvertAmountUseCase {
   convertAmount(
-    amount: number | undefined,
-    amountType: AmountType
+    amount: number | undefined | null,
+    amountType: AmountType,
   ): Observable<number | undefined>;
 }

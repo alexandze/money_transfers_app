@@ -4,12 +4,10 @@ import {
   DestroyRef,
   inject,
   Input,
-  OnInit,
 } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
-  FormsModule,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from '@angular/forms';
@@ -43,8 +41,8 @@ export class DropdownCountriesComponent
 
   destroyRef = inject(DestroyRef);
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange?: (value: Country | null) => Country | null;
+  onTouched?: (value: Country | null) => Country | null;
 
   get selectedCountry(): Country | null {
     return this.selectedCountryFormControl.value;
@@ -53,14 +51,14 @@ export class DropdownCountriesComponent
   selectedCountryFormControl = new FormControl<Country | null>(null);
 
   filterValue: string | undefined = '';
-  isDisabled: boolean = false;
+  isDisabled = false;
   cssProperties = { width: '100%' };
 
   ngAfterViewInit(): void {
     this.selectedCountryFormControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        this.onChange(value);
+        this.onChange?.(value);
       });
 
     this.setDisabledState?.(this.isDisabled);
@@ -75,16 +73,18 @@ export class DropdownCountriesComponent
     options.filter?.(event);
   }
 
-  writeValue(obj: any): void {
+  writeValue(obj: Country | null): void {
     this.selectedCountryFormControl.setValue(obj);
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: Country | null) => Country | null): void {
     this.onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+
+  registerOnTouched(fn: (value: Country | null) => Country | null): void {
     this.onTouched = fn;
   }
+
   setDisabledState?(isDisabled: boolean): void {
     if (isDisabled) {
       this.selectedCountryFormControl.disable();

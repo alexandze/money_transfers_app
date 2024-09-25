@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  AfterViewInit,
+} from '@angular/core';
 import { DropdownCountriesComponent } from '../../components/dropdown-countries/dropdown-countries.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { InputNumberComponent } from '../../components/input-number/input-number.component';
@@ -15,7 +21,7 @@ import {
   setSelectedSendCountryAction,
   setSelectedSendRateAction,
 } from '../../stores/money-send-form/money-send-form.actions';
-import { filter, map, Observable, tap, zip } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   selectReceiveCountries,
@@ -39,7 +45,7 @@ import { AmountType } from '../../models/AmountType';
   templateUrl: './money-send-form.component.html',
   styleUrl: './money-send-form.component.scss',
 })
-export class MoneySendFormComponent implements OnInit {
+export class MoneySendFormComponent implements OnInit, AfterViewInit {
   destroyRef = inject(DestroyRef);
 
   sendCountriesFormControl = new FormControl<Country | null>(null);
@@ -51,11 +57,11 @@ export class MoneySendFormComponent implements OnInit {
   readonly receiveCountries = this.store.selectSignal(selectReceiveCountries);
 
   readonly sendCountriesDropdownLoading = this.store.selectSignal(
-    selectSendCountriesDropdownLoading
+    selectSendCountriesDropdownLoading,
   );
 
   readonly receiveCountriesDropdownLoading = this.store.selectSignal(
-    selectSendCountriesDropdownLoading
+    selectSendCountriesDropdownLoading,
   );
 
   // label
@@ -89,6 +95,7 @@ export class MoneySendFormComponent implements OnInit {
     this.onDispatchSelectedSendCountry();
     this.onDispatchSelectedReceiveCountry();
     this.onDispatchSendAmountValueChange();
+    this.onDispatchReceiveAmountValueChange();
   }
 
   private onInitDispatch() {
@@ -101,16 +108,30 @@ export class MoneySendFormComponent implements OnInit {
     this.sendAmountFormControl.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        //filter((amount) => typeof amount === 'number'),
-        tap((amount) => console.log('my amount', amount)),
         tap((amount) =>
           this.store.dispatch(
             convertAmountAction({
-              amount: typeof amount === 'number' ? amount : undefined,
+              amount,
               amountType: AmountType.Send,
-            })
-          )
-        )
+            }),
+          ),
+        ),
+      )
+      .subscribe();
+  }
+
+  private onDispatchReceiveAmountValueChange() {
+    this.receiveAmountFormControl.valueChanges
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((amount) =>
+          this.store.dispatch(
+            convertAmountAction({
+              amount,
+              amountType: AmountType.Receive,
+            }),
+          ),
+        ),
       )
       .subscribe();
   }
@@ -123,13 +144,13 @@ export class MoneySendFormComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
         tap((selectedSendCountry) =>
           this.store.dispatch(
-            setSelectedSendCountryAction({ selectedSendCountry })
-          )
+            setSelectedSendCountryAction({ selectedSendCountry }),
+          ),
         ),
         tap(() => {
           this.store.dispatch(setSelectedSendRateAction());
           this.store.dispatch(setSelectedReceiveRateAction());
-        })
+        }),
       )
       .subscribe();
   }
@@ -142,13 +163,13 @@ export class MoneySendFormComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
         tap((selectedReceiveCountry) =>
           this.store.dispatch(
-            setSelectedReceiveCountryAction({ selectedReceiveCountry })
-          )
+            setSelectedReceiveCountryAction({ selectedReceiveCountry }),
+          ),
         ),
         tap(() => {
           this.store.dispatch(setSelectedSendRateAction());
           this.store.dispatch(setSelectedReceiveRateAction());
-        })
+        }),
       )
       .subscribe();
   }
@@ -157,11 +178,11 @@ export class MoneySendFormComponent implements OnInit {
     return this.store.select(selectSendCurrency).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((sendCurrency) =>
-        !!sendCurrency
+        sendCurrency
           ? this.enableSendAmountFormControl()
-          : this.disabledSendAmountFormControl()
+          : this.disabledSendAmountFormControl(),
       ),
-      map((sendCurrency) => (!!sendCurrency ? sendCurrency : null))
+      map((sendCurrency) => (sendCurrency ? sendCurrency : null)),
     );
   }
 
@@ -169,11 +190,11 @@ export class MoneySendFormComponent implements OnInit {
     return this.store.select(selectReceiveCurrency).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap((receiveCurrency) =>
-        !!receiveCurrency
+        receiveCurrency
           ? this.enableReceiveAmountFormControl()
-          : this.disabledReceiveAmountFormControl()
+          : this.disabledReceiveAmountFormControl(),
       ),
-      map((receiveCurrency) => (!!receiveCurrency ? receiveCurrency : null))
+      map((receiveCurrency) => (receiveCurrency ? receiveCurrency : null)),
     );
   }
 

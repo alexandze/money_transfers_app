@@ -1,6 +1,5 @@
 import {
   ApplicationConfig,
-  InjectionToken,
   provideZoneChangeDetection,
   isDevMode,
 } from '@angular/core';

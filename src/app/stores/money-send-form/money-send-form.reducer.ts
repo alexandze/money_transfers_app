@@ -19,8 +19,8 @@ import { AmountType } from '../../models/AmountType';
 export const MONEY_SEND_FORM_STATE_NAME = 'moneySendForm';
 
 export interface MoneySendFormState {
-  sendAmount?: number;
-  receiveAmount?: number;
+  sendAmount?: number | null;
+  receiveAmount?: number | null;
   rates?: Rate[];
   sendCountries?: Country[];
   receiveCountries?: Country[];
@@ -45,7 +45,7 @@ export const moneySendFormReducer = createReducer(
           ...state,
           sendAmount: amount,
         }
-      : { ...state, receiveAmount: amount }
+      : { ...state, receiveAmount: amount },
   ),
   on(
     convertAmountSuccessAction,
@@ -55,7 +55,7 @@ export const moneySendFormReducer = createReducer(
         : {
             ...state,
             receiveAmount: amountConverted,
-          }
+          },
   ),
   on(getRateSuccessAction, (state, { rates }) => ({
     ...state,
@@ -94,5 +94,5 @@ export const moneySendFormReducer = createReducer(
   on(setSelectedReceiveRateSuccessAction, (state, { selectedReceiveRate }) => ({
     ...state,
     selectedReceiveRate,
-  }))
+  })),
 );

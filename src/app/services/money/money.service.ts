@@ -51,7 +51,7 @@ export class MoneyService
       mergeMap((rateType) => {
         if (!rateType) return of(undefined);
         return this.findRateByType(rateType);
-      })
+      }),
     );
   }
 
@@ -60,19 +60,21 @@ export class MoneyService
       mergeMap((rateType) => {
         if (!rateType) return of(undefined);
         return this.findRateByType(rateType);
-      })
+      }),
     );
   }
 
   public convertAmount(
-    amount: number | undefined,
-    amountType: AmountType
+    amount: number | undefined | null,
+    amountType: AmountType,
   ): Observable<number | undefined> {
+    if (typeof amount != 'number') return of(undefined);
+
     return this.getSelectedRateByAmountType(amountType).pipe(
       map((rate) => {
-        if (!rate || typeof amount !== 'number') return undefined;
+        if (!rate) return undefined;
         return this.convert(amount, rate);
-      })
+      }),
     );
   }
 
@@ -94,12 +96,12 @@ export class MoneyService
       map((rates) => {
         if (!rates) return undefined;
         return rates.find((rate) => rate.type === rateType);
-      })
+      }),
     );
   }
 
   private getSelectedRateByAmountType(
-    amountType: AmountType
+    amountType: AmountType,
   ): Observable<Rate | undefined> {
     switch (amountType) {
       case AmountType.Send:

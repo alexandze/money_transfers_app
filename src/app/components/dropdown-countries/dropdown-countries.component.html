@@ -17,6 +17,7 @@
         <img
           [src]="selectedOption.code.toLowerCase() + '.svg'"
           style="width: 18px"
+          alt="country flag"
         />
         <div class="w-full">{{ selectedOption.name }}</div>
       </div>
@@ -24,7 +25,11 @@
 
     <ng-template let-country pTemplate="item">
       <div class="flex align-items-center gap-2">
-        <img [src]="country.code.toLowerCase() + '.svg'" style="width: 18px" />
+        <img
+          [src]="country.code.toLowerCase() + '.svg'"
+          style="width: 18px"
+          alt="coutry flag"
+        />
         <div class="w-full">{{ country.name }}</div>
       </div>
     </ng-template>

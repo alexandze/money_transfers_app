@@ -8,9 +8,8 @@ describe('MoneySendFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MoneySendFormComponent]
-    })
-    .compileComponents();
+      imports: [MoneySendFormComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MoneySendFormComponent);
     component = fixture.componentInstance;

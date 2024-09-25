@@ -35,11 +35,11 @@ import { DEFAULT_CURRENCY } from '../../models/Country';
 export class InputNumberComponent
   implements ControlValueAccessor, AfterViewInit, OnChanges
 {
-  @Input() label: string = '';
-  @Input() placeholder: string = '';
-  @Input() forLabel: string = '';
-  @Input() inputId: string = '';
-  @Input() mode: string = '';
+  @Input() label = '';
+  @Input() placeholder = '';
+  @Input() forLabel = '';
+  @Input() inputId = '';
+  @Input() mode = '';
   @Input() currency: string | null = '';
   @Input() _currency: string = DEFAULT_CURRENCY;
 
@@ -50,7 +50,7 @@ export class InputNumberComponent
 
   inputNumberFormControl = new FormControl<number | null>(null);
 
-  isDisabled: boolean = false;
+  isDisabled = false;
   cssProperties = { width: '100%' };
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -68,7 +68,7 @@ export class InputNumberComponent
     this.inputNumberFormControl.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap((value) => this.onChange(value))
+        tap((value) => this.onChange(value)),
       )
       .subscribe();
 
