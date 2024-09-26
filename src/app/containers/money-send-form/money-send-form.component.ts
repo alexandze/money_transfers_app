@@ -24,14 +24,19 @@ import {
 import { map, Observable, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  selectReceiveAmount,
   selectReceiveCountries,
   selectReceiveCurrency,
+  selectSendAmount,
   selectSendCountries,
   selectSendCountriesDropdownLoading,
   selectSendCurrency,
 } from '../../stores/money-send-form/money-send-form.selector';
 import { CommonModule } from '@angular/common';
 import { AmountType } from '../../models/AmountType';
+import { TransferInfoItemComponent } from '../../components/transfer-info-item/transfer-info-item.component';
+import { DividerModule } from 'primeng/divider';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-money-send-form',
@@ -41,6 +46,9 @@ import { AmountType } from '../../models/AmountType';
     ReactiveFormsModule,
     InputNumberComponent,
     CommonModule,
+    TransferInfoItemComponent,
+    DividerModule,
+    ButtonModule,
   ],
   templateUrl: './money-send-form.component.html',
   styleUrl: './money-send-form.component.scss',
@@ -96,6 +104,8 @@ export class MoneySendFormComponent implements OnInit, AfterViewInit {
     this.onDispatchSelectedReceiveCountry();
     this.onDispatchSendAmountValueChange();
     this.onDispatchReceiveAmountValueChange();
+    this.onSendAmountChange();
+    this.onReceiveAmountChange();
   }
 
   private onInitDispatch() {
@@ -212,5 +222,31 @@ export class MoneySendFormComponent implements OnInit, AfterViewInit {
 
   private enableReceiveAmountFormControl() {
     this.receiveAmountFormControl.enable();
+  }
+
+  private onReceiveAmountChange() {
+    this.store
+      .select(selectReceiveAmount)
+      .pipe(
+        tap((amount) => {
+          this.receiveAmountFormControl.setValue(amount as number, {
+            emitEvent: false,
+          });
+        }),
+      )
+      .subscribe();
+  }
+
+  private onSendAmountChange() {
+    this.store
+      .select(selectSendAmount)
+      .pipe(
+        tap((amount) => {
+          this.sendAmountFormControl.setValue(amount as number, {
+            emitEvent: false,
+          });
+        }),
+      )
+      .subscribe();
   }
 }

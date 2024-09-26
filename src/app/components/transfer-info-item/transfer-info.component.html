@@ -1,0 +1,17 @@
+<div class="w-full flex flex-row justify-between">
+  <div class="flex flex-row items-center">
+    <span class="mr-1 font-bold">{{ title }}</span>
+    <i
+      [pTooltip]="tooltipText"
+      tooltipPosition="top"
+      [tooltipOptions]="tooltipOptions"
+      *ngIf="hasTitleIconClass"
+      [ngClass]="titleIconClass"
+      class="pi pi-info-circle"
+    ></i>
+  </div>
+  <div class="flex flex-row items-center">
+    <span *ngIf="hasValueIconClass" [ngClass]="valueIconClass"></span>
+    <span>{{ value }}</span>
+  </div>
+</div>

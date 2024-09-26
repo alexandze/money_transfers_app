@@ -1,5 +1,5 @@
 <div
-  class="w-full rounded-lg overflow-hidden shadow-2xl bg-white h-[500px] p-5 text-black flex flex-col"
+  class="w-full rounded-lg overflow-hidden shadow-2xl bg-white h-[750px] p-5 text-black flex flex-col"
 >
   <div class="mb-5">
     <app-dropdown-countries
@@ -19,7 +19,7 @@
       [loading]="receiveCountriesDropdownLoading() || false"
     ></app-dropdown-countries>
   </div>
-  <div>
+  <div class="mb-5">
     <app-input-number
       [formControl]="sendAmountFormControl"
       [label]="labelSendAmount"
@@ -30,7 +30,7 @@
       [inputId]="forLabelSendAmount"
     ></app-input-number>
   </div>
-  <div>
+  <div class="mb-10">
     <app-input-number
       [formControl]="receiveAmountFormControl"
       [label]="labelReceiveAmount"
@@ -40,5 +40,54 @@
       [forLabel]="forLabelReceiveAmount"
       [inputId]="forLabelReceiveAmount"
     ></app-input-number>
+  </div>
+  <div class="w-full mb-1">
+    <app-transfer-info-item
+      [title]="'Rate'"
+      [value]="'440'"
+      [valueIconClass]="'dot p-badge-dot bg-green-500 mr-1'"
+      [titleIconClass]="'pi pi-info-circle'"
+      [tooltipText]="
+        'The send rate represents the rate of exchange you will receive when sending'
+      "
+    ></app-transfer-info-item>
+  </div>
+  <div class="w-full mb-1">
+    <app-transfer-info-item
+      [title]="'Send Fee'"
+      [value]="'CA$0'"
+      [titleIconClass]="'pi pi-info-circle'"
+      [tooltipText]="
+        'A charge applied to process your transfer. It may vary by amount, destination, and payment method.'
+      "
+    ></app-transfer-info-item>
+  </div>
+  <div class="w-full mb-3">
+    <app-transfer-info-item
+      [title]="'Delivery'"
+      [value]="'Delivery in a few minutes'"
+    ></app-transfer-info-item>
+  </div>
+  <p-divider class="mb-3" />
+  <div class="w-full mb-3">
+    <app-transfer-info-item
+      [title]="'Total'"
+      [value]="'CA$440'"
+    ></app-transfer-info-item>
+  </div>
+  <div class="flex w-full flex-col">
+    <p-button
+      severity="contrast"
+      class="w-full mb-3"
+      styleClass="w-full"
+      label="Sign in and send"
+    />
+    <p-button
+      severity="contrast"
+      class="w-full"
+      styleClass="w-full"
+      label="Call us: 888 888 8888"
+      [outlined]="true"
+    />
   </div>
 </div>
