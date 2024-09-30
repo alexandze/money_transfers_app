@@ -7,4 +7,5 @@ export interface Rate {
   type: string;
   value: number;
   calculationType: CalculationType;
+  fee: number;
 }

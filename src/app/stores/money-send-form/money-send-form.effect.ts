@@ -15,7 +15,7 @@ import {
   setSelectedSendRateAction,
   setSelectedSendRateSuccessAction,
 } from './money-send-form.actions';
-import { catchError, EMPTY, map, of, switchMap, zip } from 'rxjs';
+import { catchError, EMPTY, map, switchMap } from 'rxjs';
 import {
   CONVERT_AMOUNT_USE_CASE,
   GET_COUNTRY_USE_CASE,

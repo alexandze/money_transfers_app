@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CalculationType, Rate } from '../../models/Rate';
-import { delay, filter, from, map, mergeMap, Observable, of, take } from 'rxjs';
+import { delay, map, mergeMap, Observable, of, take } from 'rxjs';
 import { GetRateUseCase } from '../../use-cases/money/get-rate.use-cases';
 import { GetCountriesUseCase } from '../../use-cases/money/get-countries.use-cases';
 import { Country } from '../../models/Country';
@@ -41,8 +41,14 @@ export class MoneyService
         type: 'CA->CMR',
         value: 440,
         calculationType: CalculationType.Multiply,
+        fee: 0,
       },
-      { type: 'CMR->CA', value: 440, calculationType: CalculationType.Divide },
+      {
+        type: 'CMR->CA',
+        value: 440,
+        calculationType: CalculationType.Divide,
+        fee: 0,
+      },
     ]);
   }
 

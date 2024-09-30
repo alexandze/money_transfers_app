@@ -11,7 +11,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class TransferInfoItemComponent implements OnInit {
   @Input() title = '';
-  @Input() value = '';
+  @Input() value?: string;
   @Input() valueIconClass?: string;
   @Input() titleIconClass?: string;
   @Input() tooltipText?: string;

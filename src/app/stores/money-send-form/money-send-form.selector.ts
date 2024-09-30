@@ -4,6 +4,8 @@ import {
   MoneySendFormState,
 } from './money-send-form.reducer';
 
+import * as _ from 'lodash';
+
 const selectMoneySendForm = createFeatureSelector<MoneySendFormState>(
   MONEY_SEND_FORM_STATE_NAME,
 );
@@ -55,6 +57,10 @@ export const selectRates = createSelector(
   (state) => state.rates,
 );
 
+export const selectRate = createSelector(selectMoneySendForm, (state) =>
+  _.isNumber(state.selectedSendRate?.value) ? state.selectedSendRate?.value : 0,
+);
+
 export const selectSelectedSendRate = createSelector(
   selectMoneySendForm,
   (state) => state.selectedSendRate,
@@ -69,7 +75,12 @@ export const selectSendAmount = createSelector(
   selectMoneySendForm,
   (state) => state.sendAmount,
 );
+
 export const selectReceiveAmount = createSelector(
   selectMoneySendForm,
   (state) => state.receiveAmount,
+);
+
+export const selectFee = createSelector(selectMoneySendForm, (state) =>
+  _.isNumber(state.selectedSendRate?.fee) ? state.selectedSendRate?.fee : 0,
 );

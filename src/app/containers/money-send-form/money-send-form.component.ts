@@ -1,10 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, Signal } from '@angular/core';
 import { DropdownCountriesComponent } from '../../components/dropdown-countries/dropdown-countries.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { InputNumberComponent } from '../../components/input-number/input-number.component';
@@ -24,6 +18,8 @@ import {
 import { map, Observable, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  selectFee,
+  selectRate,
   selectReceiveAmount,
   selectReceiveCountries,
   selectReceiveCurrency,
@@ -53,7 +49,7 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './money-send-form.component.html',
   styleUrl: './money-send-form.component.scss',
 })
-export class MoneySendFormComponent implements OnInit, AfterViewInit {
+export class MoneySendFormComponent implements OnInit {
   destroyRef = inject(DestroyRef);
 
   sendCountriesFormControl = new FormControl<Country | null>(null);
@@ -85,33 +81,38 @@ export class MoneySendFormComponent implements OnInit, AfterViewInit {
   // mode
   modeAmountInputNumber = 'currency';
   //currency
-  sendCurrency$: Observable<string | null>;
-  receiveCurrency$: Observable<string | null>;
+  sendCurrency$?: Observable<string | null>;
+  receiveCurrency$?: Observable<string | null>;
   // for label
   forLabelSendAmount = 'sendAmount';
   forLabelReceiveAmount = 'receiveAmount';
+  rate?: Signal<number | undefined>;
+  fee?: Signal<number | undefined>;
 
-  constructor(private store: Store<AppState>) {
-    this.sendCurrency$ = this.createSendCurrencyObs();
-    this.receiveCurrency$ = this.createReceiveCurrencyObs();
-  }
+  constructor(private store: Store<AppState>) {}
+
   ngOnInit(): void {
     this.onInitDispatch();
-  }
-
-  ngAfterViewInit(): void {
-    this.onDispatchSelectedSendCountry();
-    this.onDispatchSelectedReceiveCountry();
-    this.onDispatchSendAmountValueChange();
-    this.onDispatchReceiveAmountValueChange();
-    this.onSendAmountChange();
-    this.onReceiveAmountChange();
+    this.onInitObs();
   }
 
   private onInitDispatch() {
     this.store.dispatch(getRateAction());
     this.store.dispatch(getSendCountriesAction());
     this.store.dispatch(getReceiveCountriesAction());
+  }
+
+  private onInitObs() {
+    this.sendCurrency$ = this.createSendCurrencyObs();
+    this.receiveCurrency$ = this.createReceiveCurrencyObs();
+    this.initRateSignal();
+    this.onDispatchSelectedSendCountry();
+    this.onDispatchSelectedReceiveCountry();
+    this.onDispatchSendAmountValueChange();
+    this.onDispatchReceiveAmountValueChange();
+    this.onSendAmountChange();
+    this.onReceiveAmountChange();
+    this.initFeeSignal();
   }
 
   private onDispatchSendAmountValueChange() {
@@ -248,5 +249,13 @@ export class MoneySendFormComponent implements OnInit, AfterViewInit {
         }),
       )
       .subscribe();
+  }
+
+  private initRateSignal() {
+    this.rate = this.store.selectSignal(selectRate);
+  }
+
+  private initFeeSignal() {
+    this.fee = this.store.selectSignal(selectFee);
   }
 }

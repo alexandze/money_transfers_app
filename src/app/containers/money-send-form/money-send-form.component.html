@@ -44,7 +44,7 @@
   <div class="w-full mb-1">
     <app-transfer-info-item
       [title]="'Rate'"
-      [value]="'440'"
+      [value]="rate?.()?.toString()"
       [valueIconClass]="'dot p-badge-dot bg-green-500 mr-1'"
       [titleIconClass]="'pi pi-info-circle'"
       [tooltipText]="
@@ -55,7 +55,7 @@
   <div class="w-full mb-1">
     <app-transfer-info-item
       [title]="'Send Fee'"
-      [value]="'CA$0'"
+      [value]="'CA$' + fee?.()?.toString()"
       [titleIconClass]="'pi pi-info-circle'"
       [tooltipText]="
         'A charge applied to process your transfer. It may vary by amount, destination, and payment method.'
