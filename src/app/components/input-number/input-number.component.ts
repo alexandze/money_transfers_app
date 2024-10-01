@@ -45,8 +45,12 @@ export class InputNumberComponent
 
   destroyRef = inject(DestroyRef);
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange: FuncNumberVoid = () => {
+    return;
+  };
+  onTouched: FuncNumberVoid = () => {
+    return;
+  };
 
   inputNumberFormControl = new FormControl<number | null>(null);
 
@@ -75,14 +79,14 @@ export class InputNumberComponent
     this.setDisabledState?.(this.isDisabled);
   }
 
-  writeValue(obj: any): void {
+  writeValue(obj: number): void {
     this.inputNumberFormControl.setValue(obj, { emitEvent: false });
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: FuncNumberVoid): void {
     this.onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: FuncNumberVoid): void {
     this.onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
@@ -94,3 +98,5 @@ export class InputNumberComponent
     this.inputNumberFormControl.enable();
   }
 }
+
+type FuncNumberVoid = (value: number | null) => void;
