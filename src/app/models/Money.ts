@@ -13,4 +13,13 @@ export class Money {
         return -1;
     }
   }
+
+  public static calculateTotal(sendAmount: number, fee: number): number {
+    return this.roundTo(sendAmount + fee, 2);
+  }
+
+  private static roundTo(num: number, places: number) {
+    const factor = Math.pow(10, places);
+    return Math.round(num * factor) / factor;
+  }
 }

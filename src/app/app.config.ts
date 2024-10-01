@@ -16,6 +16,7 @@ import {
 } from './stores/money-send-form/money-send-form.reducer';
 import { MoneySendFormEffect } from './stores/money-send-form/money-send-form.effect';
 import {
+  CALCULATE_TOTAL_USE_CASE,
   CONVERT_AMOUNT_USE_CASE,
   GET_COUNTRY_USE_CASE,
   GET_RATE_USE_CASE,
@@ -38,6 +39,7 @@ export const appConfig: ApplicationConfig = {
     { provide: GET_RATE_USE_CASE, useClass: MoneyService },
     { provide: GET_COUNTRY_USE_CASE, useClass: MoneyService },
     { provide: CONVERT_AMOUNT_USE_CASE, useClass: MoneyService },
+    { provide: CALCULATE_TOTAL_USE_CASE, useClass: MoneyService },
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
 };

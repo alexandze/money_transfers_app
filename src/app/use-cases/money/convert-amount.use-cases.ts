@@ -6,4 +6,6 @@ export interface ConvertAmountUseCase {
     amount: number | undefined | null,
     amountType: AmountType,
   ): Observable<number | undefined>;
+
+  reverseAmountType(amountType: AmountType): AmountType;
 }

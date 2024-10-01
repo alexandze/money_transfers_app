@@ -72,7 +72,7 @@
   <div class="w-full mb-3">
     <app-transfer-info-item
       [title]="'Total'"
-      [value]="'CA$440'"
+      [value]="'CA$' + total?.()?.toString()"
     ></app-transfer-info-item>
   </div>
   <div class="flex w-full flex-col">

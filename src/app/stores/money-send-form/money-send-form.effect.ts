@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { GetRateUseCase } from '../../use-cases/money/get-rate.use-cases';
 import {
+  calculateTotalAction,
+  calculateTotalSuccessAction,
   convertAmountAction,
   convertAmountSuccessAction,
   getRateAction,
@@ -17,13 +19,14 @@ import {
 } from './money-send-form.actions';
 import { catchError, EMPTY, map, switchMap } from 'rxjs';
 import {
+  CALCULATE_TOTAL_USE_CASE,
   CONVERT_AMOUNT_USE_CASE,
   GET_COUNTRY_USE_CASE,
   GET_RATE_USE_CASE,
 } from '../../injection-token';
 import { GetCountriesUseCase } from '../../use-cases/money/get-countries.use-cases';
 import { ConvertAmountUseCase } from '../../use-cases/money/convert-amount.use-cases';
-import { AmountType } from '../../models/AmountType';
+import { CalculateTotalUseCase } from '../../use-cases/money/calculate-total.use-cases';
 
 @Injectable()
 export class MoneySendFormEffect {
@@ -34,7 +37,20 @@ export class MoneySendFormEffect {
     private getCountryUseCase: GetCountriesUseCase,
     @Inject(CONVERT_AMOUNT_USE_CASE)
     private convertAmountUseCase: ConvertAmountUseCase,
+    @Inject(CALCULATE_TOTAL_USE_CASE)
+    private calculateTotalUseCase: CalculateTotalUseCase,
   ) {}
+
+  public calculateTotal$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(calculateTotalAction),
+      switchMap(({ sendAmount }) =>
+        this.calculateTotalUseCase.calculateTotal(sendAmount as number),
+      ),
+      map((total) => calculateTotalSuccessAction({ total })),
+      catchError(() => EMPTY),
+    ),
+  );
 
   public getRate$ = createEffect(() =>
     this.actions$.pipe(
@@ -91,9 +107,7 @@ export class MoneySendFormEffect {
           map((amountConverted) => ({
             amountConverted,
             amountTypeConverted:
-              amountType === AmountType.Send
-                ? AmountType.Receive
-                : AmountType.Send,
+              this.convertAmountUseCase.reverseAmountType(amountType),
           })),
         ),
       ),

@@ -10,29 +10,44 @@ import { AppState } from '../../app.state';
 import { Money } from '../../models/Money';
 import { AmountType } from '../../models/AmountType';
 import {
+  selectFee,
   selectRates,
   selectReceiveAmountRateType,
   selectSelectedReceiveRate,
   selectSelectedSendRate,
   selectSendAmountRateType,
 } from '../../stores/money-send-form/money-send-form.selector';
+import { CalculateTotalUseCase } from '../../use-cases/money/calculate-total.use-cases';
+import * as _ from 'lodash';
 
 @Injectable({ providedIn: 'root' })
 export class MoneyService
-  implements GetRateUseCase, GetCountriesUseCase, ConvertAmountUseCase
+  implements
+    GetRateUseCase,
+    GetCountriesUseCase,
+    ConvertAmountUseCase,
+    CalculateTotalUseCase
 {
   constructor(private store: Store<AppState>) {}
+
+  public calculateTotal(sendAmount: number): Observable<number> {
+    if (!_.isNumber(sendAmount)) return of(0);
+
+    return this.getFeeFromState().pipe(
+      map((fee) => Money.calculateTotal(sendAmount, fee)),
+    );
+  }
 
   public getSendCountries(): Observable<Country[]> {
     return of([
       { code: 'CA', name: 'Canada', currency: 'CAD' },
-    ] as Country[]).pipe(delay(3000));
+    ] as Country[]).pipe(delay(1000));
   }
 
   public getReceiveCountries(): Observable<Country[]> {
     return of([
       { code: 'CMR', name: 'Cameroon', currency: 'XAF' },
-    ] as Country[]).pipe(delay(3000));
+    ] as Country[]).pipe(delay(1000));
   }
 
   public getRate(): Observable<Rate[]> {
@@ -82,6 +97,16 @@ export class MoneyService
         return this.convert(amount, rate);
       }),
     );
+  }
+
+  public reverseAmountType(amountType: AmountType): AmountType {
+    return amountType === AmountType.Send
+      ? AmountType.Receive
+      : AmountType.Send;
+  }
+
+  private getFeeFromState(): Observable<number> {
+    return this.store.select(selectFee).pipe(take(1));
   }
 
   private convert(amount: number, rate: Rate): number {

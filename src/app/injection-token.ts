@@ -14,3 +14,6 @@ export const GET_COUNTRY_USE_CASE = new InjectionToken<GetCountriesUseCase>(
 export const CONVERT_AMOUNT_USE_CASE = new InjectionToken<ConvertAmountUseCase>(
   'ConvertAmountUseCase',
 );
+
+export const CALCULATE_TOTAL_USE_CASE =
+  new InjectionToken<ConvertAmountUseCase>('CalculateTotalUseCase');

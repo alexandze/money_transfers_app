@@ -75,3 +75,13 @@ export const setSelectedReceiveRateSuccessAction = createAction(
   '[Money Send Form component] Set Selected Receive Rate Success',
   props<{ selectedReceiveRate: Rate | undefined }>(),
 );
+
+export const calculateTotalAction = createAction(
+  '[Money Send Form component] Calculate Total',
+  props<{ sendAmount?: number | null }>(),
+);
+
+export const calculateTotalSuccessAction = createAction(
+  '[Money Send Form component] Calculate Total Success',
+  props<{ total: number | undefined }>(),
+);

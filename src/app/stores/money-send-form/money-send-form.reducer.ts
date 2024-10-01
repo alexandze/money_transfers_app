@@ -1,5 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import {
+  calculateTotalSuccessAction,
   convertAmountAction,
   convertAmountSuccessAction,
   getRateSuccessAction,
@@ -30,6 +31,7 @@ export interface MoneySendFormState {
   selectedReceiveCountry: Country | null;
   selectedSendRate?: Rate;
   selectedReceiveRate?: Rate;
+  total?: number;
 }
 
 export const initialState: MoneySendFormState = {
@@ -95,4 +97,5 @@ export const moneySendFormReducer = createReducer(
     ...state,
     selectedReceiveRate,
   })),
+  on(calculateTotalSuccessAction, (state, { total }) => ({ ...state, total })),
 );

@@ -6,6 +6,7 @@ import { Country } from '../../models/Country';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../app.state';
 import {
+  calculateTotalAction,
   convertAmountAction,
   getRateAction,
   getReceiveCountriesAction,
@@ -27,6 +28,7 @@ import {
   selectSendCountries,
   selectSendCountriesDropdownLoading,
   selectSendCurrency,
+  selectTotal,
 } from '../../stores/money-send-form/money-send-form.selector';
 import { CommonModule } from '@angular/common';
 import { AmountType } from '../../models/AmountType';
@@ -88,6 +90,7 @@ export class MoneySendFormComponent implements OnInit {
   forLabelReceiveAmount = 'receiveAmount';
   rate?: Signal<number | undefined>;
   fee?: Signal<number | undefined>;
+  total?: Signal<number | undefined>;
 
   constructor(private store: Store<AppState>) {}
 
@@ -113,6 +116,7 @@ export class MoneySendFormComponent implements OnInit {
     this.onSendAmountChange();
     this.onReceiveAmountChange();
     this.initFeeSignal();
+    this.initTotalSignal();
   }
 
   private onDispatchSendAmountValueChange() {
@@ -242,13 +246,16 @@ export class MoneySendFormComponent implements OnInit {
     this.store
       .select(selectSendAmount)
       .pipe(
-        tap((amount) => {
-          this.sendAmountFormControl.setValue(amount as number, {
-            emitEvent: false,
-          });
-        }),
+        tap((amount) => this.setValueSendAmountFormControl(amount as number)),
+        tap((sendAmount) =>
+          this.store.dispatch(calculateTotalAction({ sendAmount })),
+        ),
       )
       .subscribe();
+  }
+
+  private setValueSendAmountFormControl(amount: number) {
+    this.sendAmountFormControl.setValue(amount, { emitEvent: false });
   }
 
   private initRateSignal() {
@@ -257,5 +264,9 @@ export class MoneySendFormComponent implements OnInit {
 
   private initFeeSignal() {
     this.fee = this.store.selectSignal(selectFee);
+  }
+
+  private initTotalSignal() {
+    this.total = this.store.selectSignal(selectTotal);
   }
 }
